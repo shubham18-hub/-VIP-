@@ -771,7 +771,8 @@
         const AnnouncementLoader = {
             load: async () => {
                 try {
-                    const response = await fetch('http://vip.mrwoods.top/index.php', {
+                    //这里是作者的公告api地址，实际上请替换成自己的，api使用PHP，请见index.php，自行修改，懒得做后台。
+                    const response = await fetch('http://vip.mrwoods.top/api', {
                         mode: 'cors', // 明确使用CORS模式
                         cache: 'no-cache',
                         headers: {
