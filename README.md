@@ -6,6 +6,8 @@
 
 ### [博客](https://www.mrwoods.top/archives/vipying-shi-jie-xi)
 
+### [API接口提供](https://github.com/MrWoods1692/-VIP-/blob/main/api)
+
 ## 项目预览图
 ![VIP影视解析](https://pic4.zhimg.com/v2-0916f1ec1004312cdc0a088b0bc8e3d7_r.jpg)
 
