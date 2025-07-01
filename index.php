@@ -1,3 +1,5 @@
+//这里是公告的API，部署在服务器，路径自己设置，可以修改里面的公告内容，懒得做后台了。
+
 <?php
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, OPTIONS');
