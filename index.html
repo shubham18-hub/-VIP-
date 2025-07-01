@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIP影视解析</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        html {
+            font-size: 62.5%;
+            scroll-behavior: smooth;
+        }
+        body {
+            line-height: 1.5;
+            min-width: 320px;
+            background: linear-gradient(135deg, #0c1120 0%, #1a243b 100%);
+            color: #e2e8f0;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            overflow-x: hidden;
+        }
+        .modal-center {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: modalIn 0.3s ease-out;
+            z-index: 100;
+        }
+        @keyframes modalIn {
+            from { opacity: 0; transform: translate(-50%, -45%); }
+            to { opacity: 1; transform: translate(-50%, -50%); }
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .iframe-sandbox {
+            sandbox: allow-forms allow-scripts allow-same-origin;
+        }
+        .glow-card {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+            transition: all 0.3s ease;
+        }
+        .glow-card:hover {
+            box-shadow: 0 0 30px rgba(99, 102, 241, 0.4);
+        }
+        .video-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+            background: linear-gradient(145deg, #1a243b, #0c1120);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+        .video-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6, #6366f1);
+            border-radius: 4px 4px 0 0;
+        }
+        .security-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.4);
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 12px;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .security-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            display: block;
+        }
+        .input-glow:focus {
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
+        }
+        .btn-glow {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-glow::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 70%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .btn-glow:hover::after {
+            opacity: 1;
+        }
+        .security-shield {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(10px);
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .security-shield.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .security-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .security-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .platforms-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 15px;
+            margin-top: 25px;
+        }
+        .platform-card {
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            text-align: center;
+        }
+        .platform-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(99, 102, 241, 0.5);
+            background: rgba(30, 41, 59, 0.9);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .tencent { color: #0084ff; border-left: 4px solid #0084ff; }
+        .iqiyi { color: #1e90ff; border-left: 4px solid #1e90ff; }
+        .bilibili { color: #fb7299; border-left: 4px solid #fb7299; }
+        .tudou { color: #ff4e50; border-left: 4px solid #ff4e50; }
+        .leshi { color: #f857a6; border-left: 4px solid #f857a6; }
+        .mango { color: #ff9966; border-left: 4px solid #ff9966; }
+        .youku { color: #00c6ff; border-left: 4px solid #00c6ff; }
+        .sohu { color: #1a2980; border-left: 4px solid #1a2980; }
+        .pptv { color: #7f00ff; border-left: 4px solid #7f00ff; }
+        .acfun { color: #fd746c; border-left: 4px solid #fd746c; }
+        .cctv { color: #ff0000; border-left: 4px solid #ff0000; }
+        .migu { color: #ff6a00; border-left: 4px solid #ff6a00; }
+        .xigua { color: #ffc400; border-left: 4px solid #ffc400; }
+        .fengxing { color: #00a0e9; border-left: 4px solid #00a0e9; }
+        .iqiyi-intl { color: #00a1d6; border-left: 4px solid #00a1d6; }
+        .douyin { color: #ff0050; border-left: 4px solid #ff0050; }
+        .wasu { color: #ff6a00; border-left: 4px solid #ff6a00; }
+        .film1905 { color: #e74c3c; border-left: 4px solid #e74c3c; }
+        @media (max-width: 640px) {
+            .container {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+            .modal-center {
+                width: 95%;
+            }
+            .iframe-sandbox {
+                width: 100% !important;
+            }
+            .platforms-container {
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 公告弹窗 -->
+    <div id="announcement-modal" class="fixed inset-0 z-50 hidden bg-black/70 backdrop-blur-sm">
+        <div class="modal-center w-[90%] max-w-3xl">
+            <div class="bg-slate-800 rounded-2xl shadow-2xl overflow-hidden glow-card">
+                <div class="flex justify-between items-center p-6 border-b border-slate-700">
+                    <h3 class="text-2xl font-bold text-white flex items-center gap-2">
+                        <i class="fas fa-bullhorn text-blue-400"></i>
+                        公告
+                    </h3>
+                    <button id="announcement-close" class="text-slate-400 hover:text-white transition-colors">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <div class="p-6 bg-slate-900" id="announcement-content">
+                    <div class="flex justify-center items-center h-32">
+                        <i class="fas fa-spinner fa-spin text-blue-400 text-2xl"></i>
+                        <span class="ml-2 text-slate-300">加载公告中...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- API选择弹窗 -->
+    <div id="api-modal" class="fixed inset-0 z-50 hidden bg-black/70 backdrop-blur-sm">
+        <div class="modal-center w-[90%] max-w-4xl">
+            <div class="bg-slate-800 rounded-2xl shadow-2xl overflow-hidden glow-card">
+                <div class="flex justify-between items-center p-6 border-b border-slate-700">
+                    <h3 class="text-2xl font-bold text-white flex items-center gap-2">
+                        <i class="fas fa-plug text-blue-400"></i>
+                        选择解析接口
+                    </h3>
+                    <button id="api-modal-close" class="text-slate-400 hover:text-white transition-colors">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <div class="p-6 bg-slate-900">
+                    <p class="text-slate-300 mb-6">请选择您要使用的解析接口（当前已选择：<span id="current-api-name" class="text-blue-400 font-medium">常用接口</span>）</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="api-card" data-api="https://jx.playerjy.com/?url=">
+                            <h4 class="font-bold text-lg text-white mb-2">极速接口</h4>
+                            <p class="text-slate-400 text-sm">支持大部分平台，解析速度极快</p>
+                            <div class="mt-3 flex items-center text-xs text-slate-500">
+                                <span class="inline-block w-3 h-3 bg-green-500 rounded-full mr-2"></span>
+                                稳定性: 优秀
+                            </div>
+                        </div>
+                        
+                        <div class="api-card" data-api="http://jiexi44.qmbo.cn/jiexi/?url=">
+                            <h4 class="font-bold text-lg text-white mb-2">高清接口</h4>
+                            <p class="text-slate-400 text-sm">解析速度慢，支持1080P</p>
+                            <div class="mt-3 flex items-center text-xs text-slate-500">
+                                <span class="inline-block w-3 h-3 bg-green-500 rounded-full mr-2"></span>
+                                稳定性: 良好
+                            </div>
+                        </div>
+                        
+                        <div class="api-card" data-api="https://z1.m1907.top/?jx=">
+                            <h4 class="font-bold text-lg text-white mb-2">超清接口</h4>
+                            <p class="text-slate-400 text-sm">支持4K超清，资源丰富</p>
+                            <div class="mt-3 flex items-center text-xs text-slate-500">
+                                <span class="inline-block w-3 h-3 bg-yellow-500 rounded-full mr-2"></span>
+                                稳定性: 较差
+                            </div>
+                        </div>
+                        
+                        <div class="api-card selected" data-api="https://yemu.xyz/?url=">
+                            <h4 class="font-bold text-lg text-white mb-2">常用接口</h4>
+                            <p class="text-slate-400 text-sm">默认接口，稳定性好</p>
+                            <div class="mt-3 flex items-center text-xs text-slate-500">
+                                <span class="inline-block w-3 h-3 bg-green-500 rounded-full mr-2"></span>
+                                稳定性: 优秀
+                            </div>
+                        </div>
+                        
+                        <div class="api-card" data-api="https://jx.77flv.cc/?url=">
+                            <h4 class="font-bold text-lg text-white mb-2">海外接口</h4>
+                            <p class="text-slate-400 text-sm">支持海外访问</p>
+                            <div class="mt-3 flex items-center text-xs text-slate-500">
+                                <span class="inline-block w-3 h-3 bg-yellow-500 rounded-full mr-2"></span>
+                                稳定性: 中等
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 flex justify-center">
+                        <button id="confirm-api" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl transition-all">
+                            确认选择
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主界面 -->
+    <header class="bg-gradient-to-r from-blue-800 to-indigo-900 text-white shadow-xl relative overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <div class="absolute top-10 left-10 w-40 h-40 rounded-full bg-blue-500/10 floating-element" style="animation-delay: 0s"></div>
+            <div class="absolute bottom-20 right-20 w-60 h-60 rounded-full bg-indigo-500/10 floating-element" style="animation-delay: 1.5s"></div>
+            <div class="absolute top-1/3 right-1/4 w-24 h-24 rounded-full bg-blue-400/10 floating-element" style="animation-delay: 3s"></div>
+        </div>
+        
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-10 relative z-10">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="flex items-center gap-4">
+                    <div class="bg-gradient-to-r from-blue-500 to-indigo-600 p-3 rounded-2xl">
+                        <i class="fas fa-film text-white text-3xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-4xl font-bold">VIP影视解析</h1>
+                        <p class="text-blue-200 text-lg mt-1">免费影视 · 纯净观影</p>
+                    </div>
+                </div>
+                <button id="open-announcement" class="flex items-center gap-2 bg-white/10 hover:bg-white/20 px-5 py-3 rounded-xl transition-all">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>公告</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- 输入区域 -->
+        <div class="bg-slate-800/50 rounded-2xl p-6 mb-8 glow-card">
+            <div class="mb-6">
+                <label class="block text-slate-300 text-sm font-medium mb-2">
+                    <i class="fas fa-plug mr-2"></i>当前解析接口
+                </label>
+                <div class="flex gap-4 items-center">
+                    <div class="bg-blue-600/20 border border-blue-500/50 text-blue-300 px-4 py-3 rounded-xl flex-1">
+                        <span id="current-api-display">常用接口</span>
+                    </div>
+                    <button id="change-api" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl transition-all">
+                        <i class="fas fa-exchange-alt mr-2"></i>更换接口
+                    </button>
+                </div>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row gap-4 mb-6">
+                <div class="flex-1">
+                    <label class="block text-slate-300 text-sm font-medium mb-2">
+                        <i class="fas fa-link mr-2"></i>粘贴视频链接
+                    </label>
+                    <input type="text" id="video-url" 
+                        class="input-glow w-full p-4 text-lg bg-slate-800 border border-slate-700 text-white rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 outline-none transition-all placeholder:text-slate-500"
+                        placeholder="粘贴腾讯、爱奇艺、优酷、芒果TV等视频链接..."
+                        maxlength="2000">
+                </div>
+                <div class="flex items-end">
+                    <button id="parse-button" class="btn-glow bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white px-6 py-4 rounded-xl transition-all w-full h-[52px] flex items-center justify-center gap-2 font-medium">
+                        <i class="fas fa-play-circle"></i>
+                        解析
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 功能按钮 -->
+            <div class="grid grid-cols-2 gap-4">
+                <button id="fullscreen-button" class="glow-card bg-slate-800 p-4 rounded-xl hover:bg-slate-700/50 transition-all flex items-center justify-center gap-3">
+                    <i class="fas fa-expand text-blue-400"></i>
+                    <span class="text-slate-200 font-medium">全屏模式</span>
+                </button>
+                <button id="help-button" class="glow-card bg-slate-800 p-4 rounded-xl hover:bg-slate-700/50 transition-all flex items-center justify-center gap-3">
+                    <i class="fas fa-book-open text-blue-400"></i>
+                    <span class="text-slate-200 font-medium">使用帮助</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 视频容器 -->
+        <div class="video-container relative mb-12">
+            <div class="security-badge">
+                <span>安全防护已启用</span>
+            </div>
+            
+            <!-- 安全防护罩 -->
+            <div class="security-shield" id="security-shield">
+                <div class="bg-slate-900/90 p-8 rounded-2xl max-w-md">
+                    <i class="fas fa-shield-alt text-red-500 text-5xl mb-4"></i>
+                    <h3 class="text-2xl font-bold text-white mb-2">安全警报</h3>
+                    <p class="text-slate-300 mb-4">检测到不安全行为，已阻止页面跳转</p>
+                    <p class="text-slate-400 text-sm mb-6">系统已重置播放器到安全状态，请勿点击视频中的广告链接</p>
+                    <button id="reset-player" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl w-full transition-all">
+                        返回安全播放
+                    </button>
+                </div>
+            </div>
+            
+            <iframe id="video-frame" class="iframe-sandbox w-full h-[65vh] border-none" src="about:blank"></iframe>
+        </div>
+        
+        <!-- 安全状态指示器 -->
+        <div class="bg-slate-800/50 rounded-2xl p-6 mb-8 glow-card">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                    <i class="fas fa-shield-alt text-blue-400"></i>
+                    安全防护状态
+                </h3>
+                <span class="text-green-400 font-medium">已启用</span>
+            </div>
+            
+            <div class="grid grid-cols-3 gap-4">
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-blue-400 mb-1" id="security-count">0</div>
+                    <div class="text-slate-400 text-sm">拦截威胁</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-green-400 mb-1" id="safe-count">0</div>
+                    <div class="text-slate-400 text-sm">安全播放</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-purple-400 mb-1" id="api-count">5</div>
+                    <div class="text-slate-400 text-sm">解析接口</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 影视平台导航 -->
+        <div class="bg-slate-800/50 rounded-2xl p-6 mb-8 glow-card">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                    <i class="fas fa-compass text-blue-400"></i>
+                    影视平台导航
+                </h3>
+                <span class="text-slate-400 text-sm">点击访问各大影视平台</span>
+            </div>
+            
+            <div class="platforms-container">
+                <!-- 腾讯视频 -->
+                <div class="platform-card tencent" onclick="window.open('https://v.qq.com/', '_blank')">
+                    <div class="platform-info">
+                        <h3>腾讯视频</h3>
+                    </div>
+                </div>
+                
+                <!-- 爱奇艺 -->
+                <div class="platform-card iqiyi" onclick="window.open('https://www.iqiyi.com/', '_blank')">
+                    <div class="platform-info">
+                        <h3>爱奇艺</h3>
+                    </div>
+                </div>
+                
+                <!-- 哔哩哔哩 -->
+                <div class="platform-card bilibili" onclick="window.open('https://www.bilibili.com/', '_blank')">
+                    <div class="platform-info">
+                        <h3>哔哩哔哩</h3>
+                    </div>
+                </div>
+                
+                <!-- 土豆视频 -->
+                <div class="platform-card tudou" onclick="window.open('https://www.tudou.com/', '_blank')">
+                    <div class="platform-info">
+                        <h3>土豆视频</h3>
+                    </div>
+                </div>
+                
+                <!-- 乐视视频 -->
+                <div class="platform-card leshi" onclick="window.open('https://www.le.com/', '_blank')">
+                    <div class="platform-info">
+                        <h3>乐视视频</h3>
+                    </div>
+                </div>
+                
+                <!-- 芒果TV -->
+                <div class="platform-card mango" onclick="window.open('https://www.mgtv.com/', '_blank')">
+                    <div class="platform-info">
+                        <h3>芒果TV</h3>
+                    </div>
+                </div>
+                
+                <!-- 优酷视频 -->
+                <div class="platform-card youku" onclick="window.open('https://www.youku.com/', '_blank')">
+                    <div class="platform-info">
+                        <h3>优酷视频</h3>
+                    </div>
+                </div>
+                
+                <!-- 搜狐视频 -->
+                <div class="platform-card sohu" onclick="window.open('https://tv.sohu.com/', '_blank')">
+                    <div class="platform-info">
+                        <h3>搜狐视频</h3>
+                    </div>
+                </div>
+                
+                <!-- PPTV -->
+                <div class="platform-card pptv" onclick="window.open('https://www.pptv.com/', '_blank')">
+                    <div class="platform-info">
+                        <h3>PPTV视频</h3>
+                    </div>
+                </div>
+                
+                <!-- AcFun -->
+                <div class="platform-card acfun" onclick="window.open('https://www.acfun.cn/', '_blank')">
+                    <div class="platform-info">
+                        <h3>AcFun</h3>
+                    </div>
+                </div>
+                
+                <!-- 央视网 -->
+                <div class="platform-card cctv" onclick="window.open('https://tv.cctv.com/', '_blank')">
+                    <div class="platform-info">
+                        <h3>央视网</h3>
+                    </div>
+                </div>
+                
+                <!-- 咪咕视频 -->
+                <div class="platform-card migu" onclick="window.open('https://www.miguvideo.com/', '_blank')">
+                    <div class="platform-info">
+                        <h3>咪咕视频</h3>
+                    </div>
+                </div>
+                
+                <!-- 西瓜视频 -->
+                <div class="platform-card xigua" onclick="window.open('https://www.ixigua.com/', '_blank')">
+                    <div class="platform-info">
+                        <h3>西瓜视频</h3>
+                    </div>
+                </div>
+                
+                <!-- 风行视频 -->
+                <div class="platform-card fengxing" onclick="window.open('https://www.fun.tv/', '_blank')">
+                    <div class="platform-info">
+                        <h3>风行视频</h3>
+                    </div>
+                </div>
+                
+                <!-- 爱奇艺国际版 -->
+                <div class="platform-card iqiyi-intl" onclick="window.open('https://www.iq.com/', '_blank')">
+                    <div class="platform-info">
+                        <h3>爱奇艺国际版</h3>
+                    </div>
+                </div>
+                
+                <!-- 抖音 -->
+                <div class="platform-card douyin" onclick="window.open('https://www.douyin.com/', '_blank')">
+                    <div class="platform-info">
+                        <h3>抖音影视</h3>
+                    </div>
+                </div>
+                
+                <!-- 华数TV -->
+                <div class="platform-card wasu" onclick="window.open('https://www.wasu.cn/', '_blank')">
+                    <div class="platform-info">
+                        <h3>华数TV</h3>
+                    </div>
+                </div>
+                
+                <!-- 1905电影网 -->
+                <div class="platform-card film1905" onclick="window.open('https://www.1905.com/', '_blank')">
+                    <div class="platform-info">
+                        <h3>1905电影网</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 使用教程弹窗 -->
+    <div id="help-modal" class="fixed inset-0 z-50 hidden bg-black/70 backdrop-blur-sm">
+        <div class="modal-center w-[90%] max-w-3xl">
+            <div class="bg-slate-800 rounded-2xl shadow-2xl overflow-hidden glow-card">
+                <div class="flex justify-between items-center p-6 border-b border-slate-700">
+                    <h3 class="text-2xl font-bold text-white flex items-center gap-2">
+                        <i class="fas fa-book text-blue-400"></i>
+                        使用教程
+                    </h3>
+                    <button id="help-close" class="text-slate-400 hover:text-white transition-colors">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <div class="p-6 bg-slate-900">
+                    <div class="prose prose-invert max-w-none">
+                        <h3 class="text-blue-400">安全解析指南</h3>
+                        <ol class="list-decimal pl-5 space-y-3 mt-3">
+                            <li>复制您想观看的VIP视频链接（支持腾讯、爱奇艺、优酷、芒果TV等）</li>
+                            <li>将链接粘贴到上方输入框中</li>
+                            <li>根据需要选择合适的解析接口（普通、高速、超清等）</li>
+                            <li>点击"解析"按钮</li>
+                            <li>等待解析完成，视频将在下方播放器中显示</li>
+                        </ol>
+                        
+                        <h3 class="text-blue-400 mt-6">安全防护机制</h3>
+                        <div class="bg-slate-800 p-4 rounded-lg mt-4 border border-blue-500/30">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="flex items-start gap-3">
+                                    <i class="fas fa-sync-alt text-blue-400 mt-1"></i>
+                                    <div>
+                                        <h4 class="font-bold text-blue-300">自动重置</h4>
+                                        <p class="text-slate-400 text-sm">检测到跳转自动恢复播放</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start gap-3">
+                                    <i class="fas fa-ban text-red-400 mt-1"></i>
+                                    <div>
+                                        <h4 class="font-bold text-blue-300">广告拦截</h4>
+                                        <p class="text-slate-400 text-sm">阻止广告弹窗和跳转</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start gap-3">
+                                    <i class="fas fa-history text-amber-400 mt-1"></i>
+                                    <div>
+                                        <h4 class="font-bold text-blue-300">历史记录</h4>
+                                        <p class="text-slate-400 text-sm">保存安全播放记录</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h3 class="text-blue-400 mt-6">安全提示</h3>
+                        <ul class="list-disc pl-5 space-y-2 mt-3 text-slate-300">
+                            <li>请勿点击视频中的广告链接，这些链接可能包含安全风险</li>
+                            <li>当播放器显示安全警报时，请点击"返回安全播放"按钮</li>
+                            <li>如遇到无法播放情况，请尝试切换解析接口或刷新页面</li>
+                            <li>使用海外接口可以访问更多资源，但速度可能较慢</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 安全覆盖层 -->
+    <div class="security-overlay" id="security-overlay">
+        <div class="bg-slate-900 p-8 rounded-2xl max-w-md text-center">
+            <i class="fas fa-shield-alt text-blue-500 text-6xl mb-6"></i>
+            <h2 class="text-3xl font-bold text-white mb-3">欢迎使用VIP影视解析</h2>
+            <p class="text-slate-300 mb-6">作者：陈森林</p>
+            <p class="text-slate-300 mb-6">博客：www.mrwoods.top</p>
+            <p class="text-slate-300 mb-6">当前：v2.1.0</p>
+            <p class="text-slate-300 mb-6"></p>
+            <div class="flex justify-center gap-4">
+                <button id="close-overlay" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl transition-all">
+                    开始使用
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="bg-slate-900/80 backdrop-blur-sm text-white mt-16 py-8 border-t border-slate-800">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <div>
+                    <div class="flex items-center gap-3 mb-3">
+                        <i class="fas fa-shield-alt text-blue-400 text-2xl"></i>
+                        <h3 class="text-xl font-bold"> VIP影视解析 </h3>
+                    </div>
+                    <p class="text-slate-500 text-sm">安全防护 · 免费影视 · 纯净体验</p>
+                </div>
+                
+                <div class="flex flex-col items-center md:items-end">
+                    <p class="text-slate-500 text-sm mb-2">
+                        &copy; 2025 VIP影视解析平台
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="https://github.com/MrWoods1692/-VIP-" class="text-slate-400 hover:text-blue-400 transition-colors">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="#" class="text-slate-400 hover:text-blue-400 transition-colors">
+                            <i class="fas fa-envelope"></i>
+                        </a>
+                        <a href="#" class="text-slate-400 hover:text-blue-400 transition-colors">
+                            <i class="fas fa-code"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 安全控制模块
+        const SecurityManager = {
+            currentValidURL: '',
+            safeHistory: [],
+            baseURLs: [
+                {name: "普通接口", url: 'https://jx.playerjy.com/?url='},
+                {name: "高速接口", url: 'http://jiexi44.qmbo.cn/jiexi/?url='},
+                {name: "超清接口", url: 'https://z1.m1907.top/?jx='},
+                {name: "常用接口", url: 'https://yemu.xyz/?url='},
+                {name: "海外接口", url: 'https://jx.77flv.cc/?url='}
+            ],
+            currentAPI: 'https://yemu.xyz/?url=',
+            currentAPIName: '常用接口',
+            securityAlertCount: 0,
+            safePlayCount: 0,
+
+            setAPI: (url, name) => {
+                SecurityManager.currentAPI = url;
+                SecurityManager.currentAPIName = name;
+                document.getElementById('current-api-display').textContent = name;
+                document.getElementById('current-api-name').textContent = name;
+            },
+
+            sanitize: (url) => {
+                try {
+                    return SecurityManager.currentAPI + encodeURIComponent(url)
+                        .replace(/[!'()*]/g, escape)
+                        .replace(/%20/g, '+');
+                } catch {
+                    return null;
+                }
+            },
+
+            validate: (url) => {
+                return url.startsWith(SecurityManager.currentAPI) && 
+                       SecurityManager.safeHistory.includes(url);
+            },
+            
+            addToSafeHistory: (url) => {
+                if (!SecurityManager.safeHistory.includes(url)) {
+                    SecurityManager.safeHistory.push(url);
+                }
+            },
+            
+            showSecurityAlert: () => {
+                const shield = document.getElementById('security-shield');
+                shield.classList.add('active');
+                SecurityManager.securityAlertCount++;
+                
+                // 更新安全徽章
+                const badge = document.querySelector('.security-badge');
+                badge.innerHTML = `
+                    <span>拦截${SecurityManager.securityAlertCount}次威胁</span>
+                `;
+                badge.style.backgroundColor = 'rgba(220, 38, 38, 0.2)';
+                badge.style.color = '#ef4444';
+                badge.style.borderColor = 'rgba(220, 38, 38, 0.4)';
+                
+                // 更新安全统计
+                document.getElementById('security-count').textContent = SecurityManager.securityAlertCount;
+            },
+            
+            recordSafePlay: () => {
+                SecurityManager.safePlayCount++;
+                document.getElementById('safe-count').textContent = SecurityManager.safePlayCount;
+            }
+        };
+
+        // 弹窗控制器
+        const ModalController = {
+            toggle: (modalId, show) => {
+                const modal = document.getElementById(modalId);
+                modal.classList.toggle('hidden', !show);
+                document.body.style.overflow = show ? 'hidden' : '';
+            }
+        };
+
+        const AnnouncementLoader = {
+            load: async () => {
+                try {
+                    const response = await fetch('http://vip.mrwoods.top/index.php', {
+                        mode: 'cors', // 明确使用CORS模式
+                        cache: 'no-cache',
+                        headers: {
+                            'Accept': 'text/html'
+                        }
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`连接错误! 状态码: ${response.status}`);
+                    }
+                    
+                    const htmlContent = await response.text();
+                    AnnouncementLoader.displayHtml(htmlContent);
+                } catch (error) {
+                    console.error('公告加载错误:', error);
+                    AnnouncementLoader.displayHtml(`
+                        <div class="text-center py-8">
+                            <i class="fas fa-exclamation-triangle text-yellow-400 text-2xl mb-2"></i>
+                            <p class="text-slate-300">公告加载失败：${error.message}</p>
+                            <p class="text-slate-400 text-sm mt-2">请检查网络连接或稍后再试</p>
+                            <button onclick="AnnouncementLoader.load()" class="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all">
+                                <i class="fas fa-sync-alt mr-2"></i>重新加载
+                            </button>
+                        </div>
+                    `);
+                }
+            },
+            
+            displayHtml: (html) => {
+                const container = document.getElementById('announcement-content');
+                container.innerHTML = html;
+                
+                // 绑定公告内的按钮事件
+                const refreshBtn = container.querySelector('#refresh-api');
+                if (refreshBtn) {
+                    refreshBtn.addEventListener('click', () => {
+                        showToast('刷新中...', 'success');
+                        // 这里可以添加实际的更新逻辑
+                    });
+                }
+                
+                // 绑定关闭按钮
+                const closeBtn = document.getElementById('announcement-close');
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', () => {
+                        ModalController.toggle('announcement-modal', false);
+                    });
+                }
+            }
+        };
+
+        // 事件绑定
+        document.getElementById('parse-button').addEventListener('click', () => {
+            const input = document.getElementById('video-url').value.trim();
+            if (!input) return showToast('请输入视频链接');
+            
+            const safeURL = SecurityManager.sanitize(input);
+            if (!safeURL) return showToast('链接包含非法字符');
+            
+            SecurityManager.currentValidURL = safeURL;
+            SecurityManager.addToSafeHistory(safeURL);
+            document.getElementById('video-frame').src = safeURL;
+            showToast('安全解析中...', 'success');
+            SecurityManager.recordSafePlay();
+        });
+
+        document.getElementById('fullscreen-button').addEventListener('click', () => {
+            if (!SecurityManager.currentValidURL || SecurityManager.currentValidURL === 'about:blank') {
+                return showToast('先解析视频后再进入全屏模式', 'warning');
+            }
+            
+            const frame = document.getElementById('video-frame');
+            if (frame.requestFullscreen) {
+                frame.requestFullscreen();
+            } else if (frame.webkitRequestFullscreen) {
+                frame.webkitRequestFullscreen();
+            }
+        });
+
+        document.getElementById('reset-player').addEventListener('click', () => {
+            const shield = document.getElementById('security-shield');
+            shield.classList.remove('active');
+            
+            if (SecurityManager.currentValidURL) {
+                document.getElementById('video-frame').src = SecurityManager.currentValidURL;
+            }
+        });
+
+        document.getElementById('close-overlay').addEventListener('click', () => {
+            const overlay = document.getElementById('security-overlay');
+            overlay.classList.remove('active');
+        });
+
+        // 弹窗控制
+        document.getElementById('open-announcement').addEventListener('click', () => {
+            ModalController.toggle('announcement-modal', true);
+            AnnouncementLoader.load();
+        });
+        document.getElementById('help-button').addEventListener('click', () => ModalController.toggle('help-modal', true));
+        document.getElementById('change-api').addEventListener('click', () => ModalController.toggle('api-modal', true));
+        
+        ['announcement-close', 'help-close', 'api-modal-close'].forEach(id => {
+            document.getElementById(id).addEventListener('click', () => {
+                const modalId = id.includes('announce') ? 'announcement-modal' : 
+                                id.includes('help') ? 'help-modal' : 'api-modal';
+                ModalController.toggle(modalId, false);
+            });
+        });
+        
+        // API选择器
+        document.querySelectorAll('.api-card').forEach(card => {
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.api-card').forEach(c => {
+                    c.classList.remove('selected');
+                });
+                card.classList.add('selected');
+            });
+        });
+        
+        document.getElementById('confirm-api').addEventListener('click', () => {
+            const selectedCard = document.querySelector('.api-card.selected');
+            if (selectedCard) {
+                const apiUrl = selectedCard.dataset.api;
+                const apiName = selectedCard.querySelector('h4').textContent;
+                SecurityManager.setAPI(apiUrl, apiName);
+                ModalController.toggle('api-modal', false);
+                showToast(`已切换到: ${apiName}`, 'success');
+            }
+        });
+
+        // 安全监控
+        const frameObserver = new MutationObserver(mutations => {
+            mutations.forEach(mutation => {
+                if (mutation.attributeName === 'src') {
+                    const frame = document.getElementById('video-frame');
+                    if (!SecurityManager.validate(frame.src)) {
+                        frame.src = SecurityManager.currentValidURL;
+                        console.warn('非法地址修改已阻止');
+                        showToast('已阻止不安全跳转', 'warning');
+                        SecurityManager.showSecurityAlert();
+                    }
+                }
+            });
+        });
+
+        frameObserver.observe(document.getElementById('video-frame'), {
+            attributes: true,
+            attributeFilter: ['src']
+        });
+
+        // 双重安全检测
+        setInterval(() => {
+            const frame = document.getElementById('video-frame');
+            if (SecurityManager.currentValidURL && 
+                (!frame.src.startsWith(SecurityManager.currentAPI) || 
+                !SecurityManager.validate(frame.src))
+            ) {
+                SecurityManager.showSecurityAlert();
+                frame.src = SecurityManager.currentValidURL;
+                console.log('安全检测：已重置为合法地址');
+            }
+        }, 1000);
+
+        // 防止iframe导航
+        window.addEventListener('message', e => {
+            const frame = document.getElementById('video-frame');
+            if (e.source === frame.contentWindow && !SecurityManager.validate(e.data.url)) {
+                frame.contentWindow.location.replace(SecurityManager.currentValidURL);
+                SecurityManager.showSecurityAlert();
+            }
+        });
+
+        // 移动端适配
+        window.addEventListener('resize', () => {
+            const frame = document.getElementById('video-frame');
+            frame.style.height = window.innerHeight * 0.65 + 'px';
+        });
+
+        // 显示通知
+        function showToast(message, type = 'error') {
+            const existingToast = document.getElementById('custom-toast');
+            if (existingToast) existingToast.remove();
+            
+            const colors = {
+                error: 'bg-rose-600',
+                success: 'bg-emerald-600',
+                warning: 'bg-amber-600',
+                info: 'bg-blue-600'
+            };
+            
+            const icons = {
+                error: 'fas fa-exclamation-circle',
+                success: 'fas fa-check-circle',
+                warning: 'fas fa-exclamation-triangle',
+                info: 'fas fa-info-circle'
+            };
+            
+            const toast = document.createElement('div');
+            toast.id = 'custom-toast';
+            toast.className = `fixed bottom-6 left-1/2 transform -translate-x-1/2 text-white px-6 py-4 rounded-xl shadow-lg z-50 ${colors[type]} animate-fadeIn flex items-center gap-3`;
+            toast.innerHTML = `
+                <i class="${icons[type]}"></i>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.add('animate-fadeOut');
+                setTimeout(() => {
+                    if (toast.parentNode) toast.parentNode.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+
+        // 添加动画样式
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translate(-50%, 20px); }
+                to { opacity: 1; transform: translate(-50%, 0); }
+            }
+            @keyframes fadeOut {
+                from { opacity: 1; transform: translate(-50%, 0); }
+                to { opacity: 0; transform: translate(-50%, 20px); }
+            }
+            .animate-fadeIn {
+                animation: fadeIn 0.3s ease forwards;
+            }
+            .animate-fadeOut {
+                animation: fadeOut 0.3s ease forwards;
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            const floatingElements = `
+                <div class="absolute -top-10 -left-10 w-32 h-32 rounded-full bg-blue-500/10 floating-element" style="animation-delay: 0s"></div>
+                <div class="absolute bottom-10 right-10 w-40 h-40 rounded-full bg-indigo-500/10 floating-element" style="animation-delay: 1.5s"></div>
+                <div class="absolute top-1/4 right-20 w-20 h-20 rounded-full bg-blue-400/10 floating-element" style="animation-delay: 3s"></div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', floatingElements);
+            
+            setTimeout(() => {
+                const overlay = document.getElementById('security-overlay');
+                overlay.classList.add('active');
+            }, 1000);
+            
+            document.getElementById('api-count').textContent = SecurityManager.baseURLs.length;
+        });
+    </script>
+</body>
+</html>
