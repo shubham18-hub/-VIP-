@@ -1,5 +1,6 @@
 //这些是视频解析接口，自行使用，收集自互联网。
 
+
 {name: "普通接口", url: 'https://jx.playerjy.com/?url='},
 {name: "高速接口", url: 'http://jiexi44.qmbo.cn/jiexi/?url='},
 {name: "超清接口", url: 'https://z1.m1907.top/?jx='},
