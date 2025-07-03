@@ -54,10 +54,6 @@
   { "name": "Twitter视频解析", "url": "https://tw.icodeq.com/video?tweet_url=" },
 
 
-  // ================= 自建方案 =================
-  { "name": "自建抖音解析", "url": "http://your_domain:2333/api?url=" },
-  { "name": "多平台自建解析", "url": "https://your_domain/api/weibo_307_video?uid=" },
-
 
   // ================= 备用接口 =================
   { "name": "解析备用01", "url": "https://jx.playerjy.cn/jx2/?url=" },
