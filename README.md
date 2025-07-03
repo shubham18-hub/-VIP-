@@ -2,7 +2,8 @@
 
 下面是为这个VIP影视解析项目的项目介绍、功能说明、使用方法和部署指南等内容。
 
-## QQ群1044794458 [点击链接加入群聊【影视自由】：](https://qm.qq.com/q/yMPoMjxFba)
+## QQ群1044794458 
+[点击链接加入群聊【影视自由】：](https://qm.qq.com/q/yMPoMjxFba)
 
 ### [Web体验](http://vip.mrwoods.top/)
 
