@@ -4,6 +4,8 @@
 
 ### [Web体验](http://vip.mrwoods.top/)
 
+### [浏览器插件](http://vip.mrwoods.top/crx/download.php)
+
 ### [作者博客](https://www.mrwoods.top/archives/vipying-shi-jie-xi)
 
 ### [API接口提供](https://github.com/MrWoods1692/-VIP-/blob/main/api)
